@@ -1,0 +1,326 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1 style="font-size: 28px; text-align: center; margin-top: 10px; margin-bottom: 0px;">Social and Property Network of 陆胜明 (ID: 571)</h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#ff0041", "font": {"size": 120}, "id": "2", "label": "\u9f99\u9646\u6c0f\u5b8b\u5170", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 68.75, "title": "\u003cem\u003e\u9f99\u9646\u6c0f\u5b8b\u5170\u003c/em\u003e (ID: 2)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "32", "label": "\u9f99\u9053\u677e", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 81.25, "title": "\u003cem\u003e\u9f99\u9053\u677e\u003c/em\u003e (ID: 32)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "44", "label": "\u9f99\u9053\u5f00", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 93.75, "title": "\u003cem\u003e\u9f99\u9053\u5f00\u003c/em\u003e (ID: 44)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "206", "label": "\u9f99\u6768\u6c0f", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 87.5, "title": "\u003cem\u003e\u9f99\u6768\u6c0f\u003c/em\u003e (ID: 206)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "214", "label": "\u9f99\u671b\u751f", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 68.75, "title": "\u003cem\u003e\u9f99\u671b\u751f\u003c/em\u003e (ID: 214)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "219", "label": "\u9f99\u666f\u9510", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 62.5, "title": "\u003cem\u003e\u9f99\u666f\u9510\u003c/em\u003e (ID: 219)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "299", "label": "\u9f99\u5bb6\u745a", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 81.25, "title": "\u003cem\u003e\u9f99\u5bb6\u745a\u003c/em\u003e (ID: 299)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "352", "label": "\u9f99\u58eb\u7199", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u9f99\u58eb\u7199\u003c/em\u003e (ID: 352)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "382", "label": "\u9f99\u58eb\u4e91", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 68.75, "title": "\u003cem\u003e\u9f99\u58eb\u4e91\u003c/em\u003e (ID: 382)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "422", "label": "\u9f99\u5174\u9e3e", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u9f99\u5174\u9e3e\u003c/em\u003e (ID: 422)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "445", "label": "\u9f99\u5174\u76d1", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 62.5, "title": "\u003cem\u003e\u9f99\u5174\u76d1\u003c/em\u003e (ID: 445)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "449", "label": "\u9f99\u5174\u7235", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 62.5, "title": "\u003cem\u003e\u9f99\u5174\u7235\u003c/em\u003e (ID: 449)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "487", "label": "\u9f99\u5174\u5584", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 75.0, "title": "\u003cem\u003e\u9f99\u5174\u5584\u003c/em\u003e (ID: 487)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "490", "label": "\u9f99\u5174\u534e", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u9f99\u5174\u534e\u003c/em\u003e (ID: 490)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "494", "label": "\u9f99\u5174\u5143", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u9f99\u5174\u5143\u003c/em\u003e (ID: 494)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "498", "label": "\u9f99\u5174", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u9f99\u5174\u003c/em\u003e (ID: 498)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "543", "label": "\u9646\u8fdc\u91d1", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u9646\u8fdc\u91d1\u003c/em\u003e (ID: 543)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "550", "label": "\u9646\u8fdc\u6e05", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 62.5, "title": "\u003cem\u003e\u9646\u8fdc\u6e05\u003c/em\u003e (ID: 550)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "551", "label": "\u9646\u8fdc\u677e", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u9646\u8fdc\u677e\u003c/em\u003e (ID: 551)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "552", "label": "\u9646\u8fdc\u5b8f", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u9646\u8fdc\u5b8f\u003c/em\u003e (ID: 552)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "553", "label": "\u9646\u8fdc\u548c", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 62.5, "title": "\u003cem\u003e\u9646\u8fdc\u548c\u003c/em\u003e (ID: 553)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "565", "label": "\u9646\u80dc\u806a", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 81.25, "title": "\u003cem\u003e\u9646\u80dc\u806a\u003c/em\u003e (ID: 565)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "566", "label": "\u9646\u80dc\u8003", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 68.75, "title": "\u003cem\u003e\u9646\u80dc\u8003\u003c/em\u003e (ID: 566)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "571", "label": "\u9646\u80dc\u660e", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 237.5, "title": "\u003cem\u003e\u9646\u80dc\u660e\u003c/em\u003e (ID: 571)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "572", "label": "\u9646\u80dc\u5fe0", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 75.0, "title": "\u003cem\u003e\u9646\u80dc\u5fe0\u003c/em\u003e (ID: 572)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "606", "label": "\u9646\u660c\u793c", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 256.25, "title": "\u003cem\u003e\u9646\u660c\u793c\u003c/em\u003e (ID: 606)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "607", "label": "\u9646\u660c\u78a7", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 75.0, "title": "\u003cem\u003e\u9646\u660c\u78a7\u003c/em\u003e (ID: 607)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "612", "label": "\u9646\u660c\u6587", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 175.0, "title": "\u003cem\u003e\u9646\u660c\u6587\u003c/em\u003e (ID: 612)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "615", "label": "\u9646\u660c\u5764", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u9646\u660c\u5764\u003c/em\u003e (ID: 615)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "662", "label": "\u9646\u51e4\u9e23", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 81.25, "title": "\u003cem\u003e\u9646\u51e4\u9e23\u003c/em\u003e (ID: 662)"}, {"color": "#00afff", "font": {"size": 120}, "id": "763", "label": "\u718a\u5c1a\u6000", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u718a\u5c1a\u6000\u003c/em\u003e (ID: 763)"}, {"color": "#00afff", "font": {"size": 120}, "id": "767", "label": "\u718a\u541b\u5bcc", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 62.5, "title": "\u003cem\u003e\u718a\u541b\u5bcc\u003c/em\u003e (ID: 767)"}, {"color": "#00deff", "font": {"size": 120}, "id": "780", "label": "\u6f58\u9f99\u6c0f", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 68.75, "title": "\u003cem\u003e\u6f58\u9f99\u6c0f\u003c/em\u003e (ID: 780)"}, {"color": "#00deff", "font": {"size": 120}, "id": "783", "label": "\u6f58\u8fdc\u7b2c", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 68.75, "title": "\u003cem\u003e\u6f58\u8fdc\u7b2c\u003c/em\u003e (ID: 783)"}, {"color": "#00deff", "font": {"size": 120}, "id": "789", "label": "\u6f58\u8fdc\u5b5d", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 75.0, "title": "\u003cem\u003e\u6f58\u8fdc\u5b5d\u003c/em\u003e (ID: 789)"}, {"color": "#00deff", "font": {"size": 120}, "id": "802", "label": "\u6f58\u5fd7\u9020", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 62.5, "title": "\u003cem\u003e\u6f58\u5fd7\u9020\u003c/em\u003e (ID: 802)"}, {"color": "#00deff", "font": {"size": 120}, "id": "804", "label": "\u6f58\u5fd7\u6c6a", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u6f58\u5fd7\u6c6a\u003c/em\u003e (ID: 804)"}, {"color": "#00deff", "font": {"size": 120}, "id": "818", "label": "\u6f58\u518d\u9e4f", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u6f58\u518d\u9e4f\u003c/em\u003e (ID: 818)"}, {"color": "#00ff97", "font": {"size": 120}, "id": "839", "label": "\u6b27\u9633\u6c38\u5f00", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u6b27\u9633\u6c38\u5f00\u003c/em\u003e (ID: 839)"}, {"color": "#00ff3e", "font": {"size": 120}, "id": "927", "label": "\u6768\u660c\u6843", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u6768\u660c\u6843\u003c/em\u003e (ID: 927)"}, {"color": "#00ff3e", "font": {"size": 120}, "id": "955", "label": "\u6768\u5409\u534e", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 62.5, "title": "\u003cem\u003e\u6768\u5409\u534e\u003c/em\u003e (ID: 955)"}, {"color": "#9bff00", "font": {"size": 120}, "id": "988", "label": "\u5f20\u5b89\u987a", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 62.5, "title": "\u003cem\u003e\u5f20\u5b89\u987a\u003c/em\u003e (ID: 988)"}, {"color": "#ff0041", "font": {"size": 120}, "id": "2032", "label": "\u9f99\u666f\u8b8a", "mass": 1, "scaling": {"label": {"max": 1000, "min": 500}}, "shape": "dot", "size": 56.25, "title": "\u003cem\u003e\u9f99\u666f\u8b8a\u003c/em\u003e (ID: 2032)"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_69", "label": "Deed 69", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 69\u003cbr\u003ePage: 71\u003cbr\u003eTitle: \u6f58\u9f99\u6c0f\u540c\u5b50\u6c5f\u529b\u8336\u5c71\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_71", "label": "Deed 71", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 71\u003cbr\u003ePage: 73\u003cbr\u003eTitle: \u9646\u80dc\u806a\u5f52\u5f15\u8336\u5c71\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_72", "label": "Deed 72", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 72\u003cbr\u003ePage: 74\u003cbr\u003eTitle: \u6b27\u9633\u6c38\u5f00\u957f\u5cad\u5761\u5934\u8336\u5c71\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_74", "label": "Deed 74", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 74\u003cbr\u003ePage: 76\u003cbr\u003eTitle: \u9646\u51e4\u9e23\u5fb7\u6d1e\u534a\u5761\u7af9\u5c71\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_80", "label": "Deed 80", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 80\u003cbr\u003ePage: 82\u003cbr\u003eTitle: \u9f99\u9053\u5f00\u6d1e\u5934\u5c4b\u8fb9\u6838\u6843\u5c71\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_88", "label": "Deed 88", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 88\u003cbr\u003ePage: 90\u003cbr\u003eTitle: \u6768\u5409\u534e\u51b2\u653e\u6838\u6843\u8336\u5c71\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_156", "label": "Deed 156", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 156\u003cbr\u003ePage: 161\u003cbr\u003eTitle: \u9646\u660c\u793c\u5927\u5e73\u5761\u7530\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_157", "label": "Deed 157", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 157\u003cbr\u003ePage: 162\u003cbr\u003eTitle: \u9f99\u5bb6\u745a\u5927\u5e73\u5761\u574e\u6c9f\u7530\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_173", "label": "Deed 173", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 173\u003cbr\u003ePage: 178\u003cbr\u003eTitle: \u6f58\u5728\u9e4f\u74e6\u7a91\u5cad\u82b1\u5730\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_175", "label": "Deed 175", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 175\u003cbr\u003ePage: 180\u003cbr\u003eTitle: \u6f58\u8fdc\u5b5d\u6c34\u69a8\u6c9f\u8fb9\u7530\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_184", "label": "Deed 184", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 184\u003cbr\u003ePage: 189\u003cbr\u003eTitle: \u9f99\u5174\u9e3e\u65b0\u76d8\u5be8\u7530\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_208", "label": "Deed 208", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 208\u003cbr\u003ePage: 213\u003cbr\u003eTitle: \u9f99\u9646\u6c0f\u5927\u5cad\u68c9\u82b1\u5730\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_308", "label": "Deed 308", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 308\u003cbr\u003ePage: 320\u003cbr\u003eTitle: \u718a\u5c1a\u6000\u846b\u82a6\u5f62\u8336\u5c71\u5178\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_344", "label": "Deed 344", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 344\u003cbr\u003ePage: 358\u003cbr\u003eTitle: \u9f99\u5174\u5c4b\u5730\u57fa\u732a\u725b\u5708\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_374", "label": "Deed 374", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 374\u003cbr\u003ePage: 388\u003cbr\u003eTitle: \u718a\u541b\u5bcc\u7a0b\u5be8\u9634\u5730\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_376", "label": "Deed 376", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 376\u003cbr\u003ePage: 390\u003cbr\u003eTitle: \u9f99\u58eb\u4e91\u592b\u5987\u5f52\u5b59\u5c4b\u57fa\u5730\u57fa\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_383", "label": "Deed 383", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 383\u003cbr\u003ePage: 397\u003cbr\u003eTitle: \u9f99\u5174\u534e\u65b0\u76d8\u8def\u9634\u5730\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_386", "label": "Deed 386", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 386\u003cbr\u003ePage: 400\u003cbr\u003eTitle: \u9646\u8fdc\u5b8f\u4e94\u4eba\u51b2\u5927\u864e\u5f62\u9634\u5730\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_387", "label": "Deed 387", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 387\u003cbr\u003ePage: 401\u003cbr\u003eTitle: \u9646\u8fd0\u6e05\u51b2\u5927\u864e\u5f62\u9634\u5730\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_390", "label": "Deed 390", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 390\u003cbr\u003ePage: 404\u003cbr\u003eTitle: \u9f99\u9053\u677e\u53d4\u4f84\u77ed\u51b2\u5730\u57fa\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_395", "label": "Deed 395", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 395\u003cbr\u003ePage: 409\u003cbr\u003eTitle: \u9f99\u666f\u9510\u5e03\u9a6c\u6d77\u56ed\u57fa\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_400", "label": "Deed 400", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 400\u003cbr\u003ePage: 414\u003cbr\u003eTitle: \u9646\u660c\u5764\u9ad8\u835e\u9634\u5730\u65ad\u5356\u5951"}, {"color": "#FFFF00", "font": {"size": 120}, "id": "deed_409", "label": "Deed 409", "mass": 2, "shape": "square", "size": 50.0, "title": "Contract 409\u003cbr\u003ePage: 423\u003cbr\u003eTitle: \u9f99\u666f\u71ee\u5e03\u82f1\u6d77\u56ed\u5703\u65ad\u5356\u5951"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "780", "label": "sold", "length": 50, "title": "sold", "to": "deed_69", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "789", "label": "sold", "length": 50, "title": "sold", "to": "deed_69", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "783", "label": "sold", "length": 50, "title": "sold", "to": "deed_69", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "565", "label": "sold", "length": 50, "title": "sold", "to": "deed_71", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "839", "label": "sold", "length": 50, "title": "sold", "to": "deed_72", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "662", "label": "sold", "length": 50, "title": "sold", "to": "deed_74", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "566", "label": "sold", "length": 50, "title": "sold", "to": "deed_74", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "44", "label": "sold", "length": 50, "title": "sold", "to": "deed_80", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "955", "label": "sold", "length": 50, "title": "sold", "to": "deed_88", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "606", "label": "sold", "length": 50, "title": "sold", "to": "deed_156", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "299", "label": "sold", "length": 50, "title": "sold", "to": "deed_157", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "818", "label": "sold", "length": 50, "title": "sold", "to": "deed_173", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "789", "label": "sold", "length": 50, "title": "sold", "to": "deed_175", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "422", "label": "sold", "length": 50, "title": "sold", "to": "deed_184", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "2", "label": "sold", "length": 50, "title": "sold", "to": "deed_208", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "763", "label": "sold", "length": 50, "title": "sold", "to": "deed_308", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "498", "label": "sold", "length": 50, "title": "sold", "to": "deed_344", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "767", "label": "sold", "length": 50, "title": "sold", "to": "deed_374", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "382", "label": "sold", "length": 50, "title": "sold", "to": "deed_376", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "206", "label": "sold", "length": 50, "title": "sold", "to": "deed_376", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "214", "label": "sold", "length": 50, "title": "sold", "to": "deed_376", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "804", "label": "sold", "length": 50, "title": "sold", "to": "deed_376", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "494", "label": "sold", "length": 50, "title": "sold", "to": "deed_376", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "490", "label": "sold", "length": 50, "title": "sold", "to": "deed_383", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "552", "label": "sold", "length": 50, "title": "sold", "to": "deed_386", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "543", "label": "sold", "length": 50, "title": "sold", "to": "deed_386", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "553", "label": "sold", "length": 50, "title": "sold", "to": "deed_386", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "551", "label": "sold", "length": 50, "title": "sold", "to": "deed_386", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "550", "label": "sold", "length": 50, "title": "sold", "to": "deed_386", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "550", "label": "sold", "length": 50, "title": "sold", "to": "deed_387", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "32", "label": "sold", "length": 50, "title": "sold", "to": "deed_390", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "449", "label": "sold", "length": 50, "title": "sold", "to": "deed_390", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "487", "label": "sold", "length": 50, "title": "sold", "to": "deed_390", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "445", "label": "sold", "length": 50, "title": "sold", "to": "deed_390", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "219", "label": "sold", "length": 50, "title": "sold", "to": "deed_395", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "615", "label": "sold", "length": 50, "title": "sold", "to": "deed_400", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": true, "font": {"size": 80}, "from": "2032", "label": "sold", "length": 50, "title": "sold", "to": "deed_409", "width": 10}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_69", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_71", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_72", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_74", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_80", "label": "bought", "length": 50, "title": "bought", "to": "927"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_80", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_88", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_156", "label": "bought", "length": 50, "title": "bought", "to": "607"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_156", "label": "bought", "length": 50, "title": "bought", "to": "612"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_156", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_157", "label": "bought", "length": 50, "title": "bought", "to": "988"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_157", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_173", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_175", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_184", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_208", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_308", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_344", "label": "bought", "length": 50, "title": "bought", "to": "352"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_344", "label": "bought", "length": 50, "title": "bought", "to": "802"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_344", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_374", "label": "bought", "length": 50, "title": "bought", "to": "572"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_374", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_376", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_383", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_386", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_387", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_390", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_395", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_400", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#C0C0C0", "highlight": "#000000"}, "dashes": false, "font": {"size": 80}, "from": "deed_409", "label": "bought", "length": 50, "title": "bought", "to": "571"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "612", "label": "\u5144-\u5f1f", "length": 50, "title": "\u5144-\u5f1f", "to": "606"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "780", "label": "\u6bcd-\u5b50", "length": 50, "title": "\u6bcd-\u5b50", "to": "789"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "780", "label": "\u6bcd-\u5b50", "length": 50, "title": "\u6bcd-\u5b50", "to": "783"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "789", "label": "\u5144-\u5f1f", "length": 50, "title": "\u5144-\u5f1f", "to": "783"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "565", "label": "\u5144-\u5f1f", "length": 50, "title": "\u5144-\u5f1f", "to": "571"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "607", "label": "\u5802\u53d4-\u5802\u4f84", "length": 50, "title": "\u5802\u53d4-\u5802\u4f84", "to": "565"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "662", "label": "\u53d4/\u4f2f-\u4f84", "length": 50, "title": "\u53d4/\u4f2f-\u4f84", "to": "566"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "571", "label": "\u8c0a\u65cf\u53d4-\u8c0a\u65cf\u4f84", "length": 200, "title": "\u8c0a\u65cf\u53d4-\u8c0a\u65cf\u4f84", "to": "44"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "606", "label": "\u5802\u5144-\u5802\u5f1f", "length": 50, "title": "\u5802\u5144-\u5802\u5f1f", "to": "607"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "607", "label": "\u5802\u5f1f-\u5802\u5144", "length": 50, "title": "\u5802\u5f1f-\u5802\u5144", "to": "612"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "572", "label": "\u5144-\u5f1f", "length": 50, "title": "\u5144-\u5f1f", "to": "565"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "572", "label": "\u5802\u5144-\u5802\u5f1f", "length": 50, "title": "\u5802\u5144-\u5802\u5f1f", "to": "571"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "565", "label": "\u5802\u5144-\u5802\u5f1f", "length": 50, "title": "\u5802\u5144-\u5802\u5f1f", "to": "571"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "662", "label": "\u65cf\u5f1f-\u65cf\u5144", "length": 50, "title": "\u65cf\u5f1f-\u65cf\u5144", "to": "566"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "2", "label": "\u5973-\u7236", "length": 200, "title": "\u5973-\u7236", "to": "571"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "606", "label": "\u5144\u5f1f", "length": 50, "title": "\u5144\u5f1f", "to": "612"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "606", "label": "\u5144-\u5f1f", "length": 50, "title": "\u5144-\u5f1f", "to": "612"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "572", "label": "\u5144-\u5f1f", "length": 50, "title": "\u5144-\u5f1f", "to": "571"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "382", "label": "\u592b-\u59bb", "length": 50, "title": "\u592b-\u59bb", "to": "206"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "382", "label": "\u7956\u7236-\u5b59", "length": 50, "title": "\u7956\u7236-\u5b59", "to": "214"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "206", "label": "\u7956\u6bcd-\u5b59", "length": 50, "title": "\u7956\u6bcd-\u5b59", "to": "214"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "32", "label": "\u53d4-\u4f84", "length": 50, "title": "\u53d4-\u4f84", "to": "449"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "32", "label": "\u53d4-\u4f84", "length": 50, "title": "\u53d4-\u4f84", "to": "487"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "32", "label": "\u53d4-\u4f84", "length": 50, "title": "\u53d4-\u4f84", "to": "445"}, {"arrows": "to", "color": {"color": "#FFDAB9", "highlight": "#FF8C00"}, "font": {"size": 8}, "from": "219", "label": "\u5916\u7525-\u8205\u7236", "length": 200, "title": "\u5916\u7525-\u8205\u7236", "to": "571"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0.05,
+            "centralGravity": 0.05,
+            "damping": 0.3,
+            "gravitationalConstant": -20000,
+            "springConstant": 0.001,
+            "springLength": 280
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    <script>
+var allNodes, allEdges, originalNodeVisuals = {}, originalEdgeVisuals = {};
+var highlightActive = false;
+var defaultEdgeLength = 150; // A general default, can be fine-tuned
+
+function storeOriginalVisuals() {
+    allNodes = network.body.data.nodes.get();
+    allEdges = network.body.data.edges.get();
+    originalNodeVisuals = {};
+    originalEdgeVisuals = {};
+
+    allNodes.forEach(function(node){
+        originalNodeVisuals[node.id] = {
+            color: JSON.parse(JSON.stringify(node.color)), // Deep copy color object
+            font: JSON.parse(JSON.stringify(node.font)),
+            size: node.size
+        };
+    });
+    allEdges.forEach(function(edge){
+        originalEdgeVisuals[edge.id] = {
+            color: JSON.parse(JSON.stringify(edge.color)), // Deep copy color object
+            font: JSON.parse(JSON.stringify(edge.font)),
+            length: edge.length,
+            dashes: edge.dashes
+        };
+    });
+    console.log("Original visuals stored.");
+}
+
+function resetHighlight() {
+    if (!allNodes) return;
+    highlightActive = false;
+    var nodesUpdate = [];
+    allNodes.forEach(function(node) {
+        if (originalNodeVisuals[node.id]) {
+            nodesUpdate.push({
+                id: node.id, 
+                color: originalNodeVisuals[node.id].color,
+                font: originalNodeVisuals[node.id].font,
+                size: originalNodeVisuals[node.id].size
+            });
+        }
+    });
+    network.body.data.nodes.update(nodesUpdate);
+
+    var edgesUpdate = [];
+    allEdges.forEach(function(edge) {
+        if (originalEdgeVisuals[edge.id]) {
+            edgesUpdate.push({
+                id: edge.id, 
+                color: originalEdgeVisuals[edge.id].color,
+                font: originalEdgeVisuals[edge.id].font,
+                length: originalEdgeVisuals[edge.id].length,
+                dashes: originalEdgeVisuals[edge.id].dashes
+            });
+        }
+    });
+    network.body.data.edges.update(edgesUpdate);
+    network.setOptions({ physics: { barnesHut: { centralGravity: 0.1 } } }); // Restore physics slightly
+    console.log("Highlight reset.");
+}
+
+network.on("click", function(params) {
+    if (params.nodes.length === 0 && params.edges.length === 0) { // Click on canvas
+        if (highlightActive) {
+            resetHighlight();
+        }
+    }
+});
+
+network.on("deselectNode", function(params) {
+    if (highlightActive) {
+       // Check if any node is still selected
+        setTimeout(function() { // Delay to allow new selection to register
+            if (network.getSelectedNodes().length === 0) {
+                resetHighlight();
+            }
+        }, 100);
+    }
+});
+
+network.on("selectNode", function(params) {
+    if (!allNodes || !allEdges || Object.keys(originalNodeVisuals).length === 0) { 
+        storeOriginalVisuals(); 
+    }
+    highlightActive = true;
+    var selectedNodeId = params.nodes[0];
+    if (!selectedNodeId) return;
+
+    var connectedEdges = network.getConnectedEdges(selectedNodeId);
+    var connectedNodes = network.getConnectedNodes(selectedNodeId);
+    connectedNodes.push(selectedNodeId); // Include the selected node itself
+
+    var nodesUpdate = [];
+    allNodes.forEach(function(node){
+        let isConnected = connectedNodes.includes(node.id);
+        let newColor = isConnected ? originalNodeVisuals[node.id].color : { border: '#D3D3D3', background: '#D3D3D3', highlight: { border: '#D3D3D3', background: '#D3D3D3' }, hover: { border: '#D3D3D3', background: '#D3D3D3' } };
+        let newFont = isConnected ? originalNodeVisuals[node.id].font : { color: '#A9A9A9', size: originalNodeVisuals[node.id].font.size }; 
+        nodesUpdate.push({ id: node.id, color: newColor, font: newFont });
+    });
+    network.body.data.nodes.update(nodesUpdate);
+
+    var edgesUpdate = [];
+    allEdges.forEach(function(edge){
+        let isConnectedEdge = connectedEdges.includes(edge.id);
+        let newColor, newLength, newDashes;
+
+        if (isConnectedEdge) {
+            let originalEdge = originalEdgeVisuals[edge.id];
+            newColor = JSON.parse(JSON.stringify(originalEdge.color)); // Start with original
+            if (newColor.highlight) { // Use specific highlight color if defined
+                 newColor.color = newColor.highlight;
+            }
+            newLength = 50; // Shorten connected edges
+            newDashes = originalEdge.dashes; // Keep original dash style
+        } else {
+            newColor = { color: '#D3D3D3', highlight: '#D3D3D3', hover: '#D3D3D3' };
+            newLength = originalEdgeVisuals[edge.id].length; // Revert to original length
+            newDashes = originalEdgeVisuals[edge.id].dashes;
+        }
+        edgesUpdate.push({ id: edge.id, color: newColor, length: newLength, dashes: newDashes });
+    });
+    network.body.data.edges.update(edgesUpdate);
+    network.setOptions({ physics: { barnesHut: { centralGravity: 0.01 } } }); // Reduce gravity pull to allow focus
+    console.log("Node selected, highlight applied.");
+});
+
+
+// Ensure original visuals are stored on first load after network is ready
+network.on('stabilizationIterationsDone', function () {
+    if (!allNodes) { storeOriginalVisuals(); }
+});
+
+
+
+// Script to ensure label visibility options
+if (typeof network !== 'undefined') {
+    network.on('stabilizationIterationsDone', function() {
+        try {
+            network.setOptions({
+                nodes: {
+                    scaling: {
+                        label: {
+                            enabled: true,
+                            min: 8,          // Desired min font size for labels
+                            max: 30,         // Desired max font size for labels
+                            drawThreshold: 1, // Draw labels even for small nodes/zoom levels
+                            maxVisible: 200  // Allow more labels to be visible
+                        }
+                    }
+                }
+            });
+            console.log("Label visibility options applied via JS after stabilization.");
+        } catch (e) {
+            console.error("Error applying label visibility options via JS:", e);
+        }
+    });
+}
+</script>
+<div id="legend" style="position:absolute;top:10px;left:10px;background:#fff;padding:10px;border:1px solid #ccc;z-index:999; font-family: Arial, sans-serif; font-size: 10px;">
+<strong>Legend</strong><br>
+<span style="display:inline-block;width:10px;height:10px;background:#E0E0E0;margin-right:5px;vertical-align:middle;border:1px solid #777;"></span> Deed Node<br>
+<div style="margin-top:3px;"><span style="display:inline-block;width:12px;height:1px;border-top: 2px dashed #C0C0C0;margin-right:5px;vertical-align:middle;"></span> Sold Edge</div>
+<div style="margin-top:3px;"><span style="display:inline-block;width:12px;height:2px;background:#C0C0C0;margin-right:5px;vertical-align:middle;"></span> Bought Edge</div>
+<div style="margin-top:3px;"><span style="display:inline-block;width:12px;height:2px;background:#FFDAB9;margin-right:5px;vertical-align:middle;"></span> Kinship Edge</div>
+<div style="margin-top:5px; font-size:9px;">Colors on people nodes vary by surname.</div>
+</div>
+</body>
+</html>
